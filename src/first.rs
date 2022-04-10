@@ -44,9 +44,40 @@ impl List {
     }
 }
 
-mod test {
+impl Drop for List {
+    fn drop(&mut self) {
+        let mut cur_link = mem::replace(&mut self.head, Link::Empty);
+
+        while let Link::More(mut boxed_node) = cur_link {
+            cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
+        }
+    }
+}
+
+mod test {  
+    use std::mem;
+
     #[test]
     fn basics() {
+        use std::{thread, time};
+
+        let sleep_sec = time::Duration::from_millis(20000);
+        let now = time::Instant::now();
+        
+        
+        let mut x = 5;
+        let y = 6;
+
+        println!("x ref before mem is : {:p}", &x);
+        println!("y ref before mem is : {:p}", &y);
+        let val = mem::replace(&mut x,y);
+        thread::sleep(sleep_sec);
+        println!("val value is : {}", val);
+        println!("x value is : {}", x);
+        println!("y value is : {}", y);
+        println!("val ref is : {:p}", &val);
+        println!("x ref is : {:p}", &x);
+        println!("y ref is : {:p}", &y);
         use super::List;
         let mut list = List::new();
 
