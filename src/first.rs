@@ -54,8 +54,9 @@ impl Drop for List {
     }
 }
 
-mod test {  
+mod test {
     use std::mem;
+  
 
     #[test]
     fn basics() {
